@@ -1,4 +1,4 @@
-module gitee.com/ivfzhou/CertificateAndSigningManageSystem/common
+module gitee.com/CertificateAndSigningManageSystem/common
 
 go 1.22
 

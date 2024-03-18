@@ -15,16 +15,52 @@ package log
 import (
 	"context"
 	"fmt"
+	"os"
+	"path"
 	"runtime"
+	"strconv"
 	"strings"
+	"time"
 
+	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
+	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
 
 	"gitee.com/CertificateAndSigningManageSystem/common/ctxs"
 )
 
-func InitialLog() {
-
+func InitialLog(logDir, module string, maxAge, rotationTime time.Duration, debug bool) {
+	err := os.MkdirAll(logDir, 0777)
+	if err != nil {
+		panic("make log dir error " + err.Error())
+	}
+	baseLogFile := path.Join(logDir, "csms")
+	writer, err := rotatelogs.New(
+		baseLogFile+"_%Y%m%d%H%M.log",
+		rotatelogs.WithLinkName(baseLogFile),      // 生成软链，指向最新日志文件
+		rotatelogs.WithMaxAge(maxAge),             // 文件最大保存时间
+		rotatelogs.WithRotationTime(rotationTime), // 日志切割时间间隔
+	)
+	if err != nil {
+		panic("rotate logs error " + err.Error())
+	}
+	lfHook := lfshook.NewHook(lfshook.WriterMap{
+		logrus.DebugLevel: writer, // 为不同级别设置不同的输出目的
+		logrus.InfoLevel:  writer,
+		logrus.WarnLevel:  writer,
+		logrus.ErrorLevel: writer,
+		logrus.FatalLevel: writer,
+		logrus.PanicLevel: writer,
+	}, &logFormatter{})
+	logrus.SetFormatter(&logFormatter{})
+	logrus.AddHook(lfHook)
+	if debug {
+		enableTrace = true
+		logrus.SetLevel(logrus.DebugLevel)
+	} else {
+		logrus.SetLevel(logrus.InfoLevel)
+	}
+	moduleName = module
 }
 
 var (
@@ -35,6 +71,11 @@ var (
 )
 
 type GormLogFormatter struct{}
+
+type logFormatter struct {
+	TimestampFormat string
+	LogFormat       string
+}
 
 // Infof 打印info日志。
 func Infof(ctx context.Context, f string, args ...any) {
@@ -176,6 +217,54 @@ func (f *GormLogFormatter) Printf(_ string, args ...any) {
 	} else {
 		Infof(ctx, "[%.3fms] [rows:%v] %s", args[1], args[len(args)-2], args[len(args)-1])
 	}
+}
+
+func (formatter *logFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+	sb := strings.Builder{}
+	sb.WriteString(entry.Time.Format("2006-01-02 15:04:05.000 "))
+	sb.WriteString(strings.ToUpper(entry.Level.String()))
+	sb.WriteString(" ")
+	sb.WriteString(moduleName)
+	sb.WriteString(" ")
+	ctx := entry.Context
+	if rid := ctxs.RequestID(ctx); len(rid) > 0 {
+		sb.WriteString(rid)
+		sb.WriteString(" ")
+	}
+	if line := ctxs.CallLine(ctx); len(line) > 0 {
+		sb.WriteString(line)
+		sb.WriteString(" ")
+	} else if entry.HasCaller() {
+		if file := trimCallerLine(entry.Caller.File); len(file) > 0 {
+			sb.WriteString(fmt.Sprintf("%s:%d ", file, entry.Caller.Line))
+		}
+	}
+	if ip := ctxs.RequestIP(ctx); len(ip) > 0 {
+		sb.WriteString(ip)
+		sb.WriteString(" ")
+	}
+	if userId := ctxs.UserID(ctx); userId > 0 {
+		sb.WriteString(strconv.Itoa(int(userId)))
+		sb.WriteString(" ")
+	}
+	if auth := ctxs.APIAuthID(ctx); auth > 0 {
+		sb.WriteString(strconv.Itoa(int(auth)))
+		sb.WriteString(" ")
+	}
+	if ph := ctxs.RequestPath(ctx); len(ph) > 0 {
+		sb.WriteString(ph)
+		sb.WriteString(" ")
+	}
+	if trace := ctxs.Trace(ctx); len(trace) > 0 {
+		sb.WriteString("[")
+		sb.WriteString(trace)
+		sb.WriteString("] ")
+	}
+	sb.WriteString(fmt.Sprintf("-- %s", entry.Message))
+	msg := strings.ReplaceAll(sb.String(), "\r\n", `\r\n`)
+	msg = strings.ReplaceAll(msg, "\n", `\n`)
+
+	return []byte(msg + "\n"), nil
 }
 
 // 获取除去项目名路径前部分的路径

@@ -27,10 +27,10 @@ const (
 
 // TUserRole 用户角色表
 type TUserRole struct {
-	ID     uint  `gorm:"column:id; type:int unsigned; primaryKey; autoIncrement; comment:主码" json:"id,omitempty"`
-	UserID uint  `gorm:"column:user_id; type:int unsigned not null; comment:用户ID，外码" json:"userId,omitempty"`
-	AppID  uint  `gorm:"column:app_id; type:int unsigned not null; comment:应用ID，外码" json:"appId,omitempty"`
-	Role   uint8 `gorm:"column:role; type:tinyint unsigned not null; comment:角色，1=超管,2=系统管理员,3=应用管理员,4=应用成员,5=可使用签名服务" json:"role,omitempty"`
+	Id     uint  `gorm:"column:id; type:int unsigned; primaryKey; autoIncrement; comment:主码" json:"id,omitempty"`
+	UserId uint  `gorm:"column:user_id; type:int unsigned not null; comment:用户Id，外码; index:idx_user_id" json:"userId,omitempty"`
+	AppId  uint  `gorm:"column:app_id; type:int unsigned not null; comment:应用Id，外码; index:idx_app_id" json:"appId,omitempty"`
+	Role   uint8 `gorm:"column:role; type:tinyint unsigned; comment:角色，1=超管,2=系统管理员,3=应用管理员,4=应用成员,5=可使用签名服务" json:"role,omitempty"`
 }
 
 func (*TUserRole) TableName() string {

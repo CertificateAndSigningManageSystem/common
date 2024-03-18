@@ -24,6 +24,7 @@ import (
 
 	"gitee.com/CertificateAndSigningManageSystem/common/ctxs"
 	"gitee.com/CertificateAndSigningManageSystem/common/log"
+	"gitee.com/CertificateAndSigningManageSystem/common/model"
 )
 
 var mysqlClient *gorm.DB
@@ -60,4 +61,14 @@ func GetMySQLClient(ctx context.Context) *gorm.DB {
 		return tx
 	}
 	return mysqlClient.WithContext(ctx)
+}
+
+func AuthMigrateAllTable(ctx context.Context) error {
+	return GetMySQLClient(ctx).AutoMigrate(
+		&model.TApp{},
+		&model.TAuthorizationAction{},
+		&model.TAuthorizationActionRelation{},
+		&model.TUser{},
+		&model.TUserRole{},
+	)
 }

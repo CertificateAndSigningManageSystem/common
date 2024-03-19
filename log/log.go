@@ -15,6 +15,7 @@ package log
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"path"
 	"runtime"
@@ -35,24 +36,40 @@ func InitialLog(logDir, module string, maxAge, rotationTime time.Duration, debug
 		panic("make log dir error " + err.Error())
 	}
 	baseLogFile := path.Join(logDir, "csms")
-	writer, err := rotatelogs.New(
-		baseLogFile+"_%Y%m%d%H%M.log",
-		rotatelogs.WithLinkName(baseLogFile),      // 生成软链，指向最新日志文件
-		rotatelogs.WithMaxAge(maxAge),             // 文件最大保存时间
-		rotatelogs.WithRotationTime(rotationTime), // 日志切割时间间隔
+	debugWriter, err := rotatelogs.New(
+		baseLogFile+"_debug_%Y-%m-%d %H:%M.log",
+		rotatelogs.WithMaxAge(maxAge),
+		rotatelogs.WithRotationTime(rotationTime),
 	)
 	if err != nil {
 		panic("rotate logs error " + err.Error())
 	}
+	infoWriter, err := rotatelogs.New(
+		baseLogFile+"_info_%Y-%m-%d %H:%M.log",
+		// rotatelogs.WithLinkName(baseLogFile),      // 生成软链，指向最新日志文件
+		rotatelogs.WithMaxAge(maxAge),
+		rotatelogs.WithRotationTime(rotationTime),
+	)
+	if err != nil {
+		panic("rotate logs error " + err.Error())
+	}
+	errorWriter, err := rotatelogs.New(
+		baseLogFile+"_error_%Y-%m-%d %H:%M.log",
+		rotatelogs.WithMaxAge(maxAge),
+		rotatelogs.WithRotationTime(rotationTime),
+	)
+	if err != nil {
+		panic("rotate logs error " + err.Error())
+	}
+	formatter := &logFormatter{}
 	lfHook := lfshook.NewHook(lfshook.WriterMap{
-		logrus.DebugLevel: writer, // 为不同级别设置不同的输出目的
-		logrus.InfoLevel:  writer,
-		logrus.WarnLevel:  writer,
-		logrus.ErrorLevel: writer,
-		logrus.FatalLevel: writer,
-		logrus.PanicLevel: writer,
-	}, &logFormatter{})
-	logrus.SetFormatter(&logFormatter{})
+		logrus.DebugLevel: debugWriter, // 为不同级别设置不同的输出目的
+		logrus.InfoLevel:  io.MultiWriter(infoWriter, debugWriter),
+		logrus.WarnLevel:  io.MultiWriter(infoWriter, debugWriter),
+		logrus.ErrorLevel: io.MultiWriter(errorWriter, infoWriter, debugWriter),
+		logrus.FatalLevel: io.MultiWriter(errorWriter, infoWriter, debugWriter),
+	}, formatter)
+	logrus.SetFormatter(formatter)
 	logrus.AddHook(lfHook)
 	if debug {
 		enableTrace = true

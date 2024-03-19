@@ -22,7 +22,7 @@ const (
 // TUser 用户信息表
 type TUser struct {
 	Id            uint      `gorm:"column:id; type:int unsigned; primaryKey; autoIncrement; comment:主码" json:"id,omitempty"`
-	NameEn        string    `gorm:"column:name_en; type:varchar(16) not null unique; comment:英文名; uniqueIndex:idx_name_en"`
+	NameEn        string    `gorm:"column:name_en; type:varchar(16) not null; comment:英文名; uniqueIndex:idx_name_en"`
 	NameZh        string    `gorm:"column:name_zh; type:varchar(32); comment:中文名"`
 	Avatar        string    `gorm:"column:avatar; type:char(38); comment:头像文件id，外码"`
 	PasswdDigest  string    `gorm:"column:passwd_digest; type:char(32); comment:密码摘要"`

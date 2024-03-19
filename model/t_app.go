@@ -28,7 +28,7 @@ const (
 // TApp 应用信息表
 type TApp struct {
 	Id             uint      `gorm:"column:id; type:int unsigned; primaryKey; autoIncrement; comment:主码" json:"id,omitempty" json:"id,omitempty"`
-	AppId          string    `gorm:"column:app_id; type:not null unique; comment:应用Id; uniqueIndex:idx_app_id" json:"appId,omitempty"`
+	AppId          string    `gorm:"column:app_id; type:char(32) not null; comment:应用Id; uniqueIndex:idx_app_id" json:"appId,omitempty"`
 	Name           string    `gorm:"column:name; type:varchar(64); comment:名称" json:"name,omitempty"`
 	UserId         uint      `gorm:"column:user_id; type:int unsigned; comment:创建人，外码; index:idx_user_id" json:"userId,omitempty"`
 	Avatar         string    `gorm:"column:avatar; type:char(38); comment:头像文件Id" json:"avatar,omitempty"`

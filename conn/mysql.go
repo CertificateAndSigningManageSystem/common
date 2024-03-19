@@ -51,6 +51,7 @@ func InitialMySQL(ctx context.Context, user, pass, host, port, db string) {
 	sql.SetMaxOpenConns(100)
 	// obj = obj.Debug()
 	mysqlClient = obj
+	log.Info(ctx, "init mysql success")
 }
 
 // GetMySQLClient 获取MySQL客户端
@@ -70,5 +71,10 @@ func AuthMigrateAllTable(ctx context.Context) error {
 		&model.TAuthorizationActionRelation{},
 		&model.TUser{},
 		&model.TUserRole{},
+		&model.TAndroidSignJob{},
+		&model.TAuthorization{},
+		&model.TEvent{},
+		&model.TFile{},
+		&model.TWinSignJob{},
 	)
 }

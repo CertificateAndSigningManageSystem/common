@@ -36,6 +36,7 @@ func InitialRabbitMQ(ctx context.Context, uri string) {
 	}
 	rabbitmqClient = connection
 	rabbitmqChannel = channel
+	log.Info(ctx, "init rabbitmq success")
 }
 
 // GetRabbitMQChannel 获取RabbitMQ通道

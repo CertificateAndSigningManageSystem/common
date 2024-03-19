@@ -31,6 +31,7 @@ func InitialRedis(ctx context.Context, addr, passwd string, db int) {
 	if err := redisClient.Ping(ctx).Err(); err != nil {
 		log.Fatalf(ctx, "cannot connect redis; %v", err)
 	}
+	log.Info(ctx, "init redis success")
 }
 
 // GetRedisClient 获取Redis客户端

@@ -76,5 +76,9 @@ func AuthMigrateAllTable(ctx context.Context) error {
 		&model.TEvent{},
 		&model.TFile{},
 		&model.TWinSignJob{},
+		&model.TAppleSignJob{},
+		&model.TTodo{},
+		&model.TAppleAccount{},
+		&model.TTodoApprover{},
 	)
 }

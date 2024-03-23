@@ -64,7 +64,7 @@ func GetMySQLClient(ctx context.Context) *gorm.DB {
 	return mysqlClient.WithContext(ctx)
 }
 
-func AuthMigrateAllTable(ctx context.Context) error {
+func AutoMigrateAllTable(ctx context.Context) error {
 	return GetMySQLClient(ctx).AutoMigrate(
 		&model.TApp{},
 		&model.TAuthorizationAction{},
@@ -80,5 +80,15 @@ func AuthMigrateAllTable(ctx context.Context) error {
 		&model.TTodo{},
 		&model.TAppleAccount{},
 		&model.TTodoApprover{},
+		&model.TAppleDevice{},
+		&model.TAndroidCertOrg{},
+		&model.TNotice{},
+		&model.TAndroidCert{},
+		&model.TWinCert{},
+		&model.TAppleCert{},
+		&model.TAppleProfile{},
+		&model.TAppleBundle{},
+		&model.TAppleBundleCapability{},
+		&model.TAppleBundleRelation{},
 	)
 }

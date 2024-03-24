@@ -14,6 +14,7 @@ package util
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -23,6 +24,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"gitee.com/CertificateAndSigningManageSystem/common/ctxs"
+	"gitee.com/CertificateAndSigningManageSystem/common/errs"
 	"gitee.com/CertificateAndSigningManageSystem/common/log"
 )
 
@@ -32,9 +34,27 @@ func Fail(c *gin.Context, status int, msg string) {
 	rid := ctxs.RequestId(ctx)
 	c.Writer.Header().Set("Content-Type", "application/json; charset=utf8")
 	c.Writer.Header().Set("Content-Length", "0")
-	c.Writer.Header().Set("CSMS-Error-Message", url.QueryEscape(msg))
-	c.Writer.Header().Set("CSMS-Request-ID", rid)
+	c.Writer.Header().Set("X-CSMS-Error-Message", url.QueryEscape(msg))
+	c.Writer.Header().Set("X-CSMS-Request-Id", rid)
 	c.Writer.WriteHeader(status)
+}
+
+// FailByErr 响应失败
+func FailByErr(c *gin.Context, err error) {
+	ctx := c.Request.Context()
+	var e *errs.Error
+	if !errors.As(err, &e) {
+		e = &errs.Error{
+			HTTPStatus: http.StatusInternalServerError,
+		}
+		log.Error(ctx, "unknown error 未知err对象", err)
+	}
+	rid := ctxs.RequestId(ctx)
+	c.Writer.Header().Set("Content-Type", "application/json; charset=utf8")
+	c.Writer.Header().Set("Content-Length", "0")
+	c.Writer.Header().Set("X-CSMS-Error-Message", url.QueryEscape(e.Msg))
+	c.Writer.Header().Set("X-CSMS-Request-Id", rid)
+	c.Writer.WriteHeader(e.HTTPStatus)
 }
 
 // Success 响应成功
@@ -47,7 +67,7 @@ func Success(c *gin.Context, v any) {
 	}
 	c.Writer.Header().Set("Content-Type", "application/json; charset=utf8")
 	c.Writer.Header().Set("Content-Length", strconv.Itoa(len(rspBody)))
-	c.Writer.Header().Set("X-CSMS-Request-ID", rid)
+	c.Writer.Header().Set("X-CSMS-Request-Id", rid)
 	c.Writer.WriteHeader(http.StatusOK)
 	n, err := c.Writer.Write(rspBody)
 	log.ErrorIf(ctx, err)
@@ -60,7 +80,7 @@ func Success(c *gin.Context, v any) {
 func VendFile(c *gin.Context, fileSize int64, fileName string, fileObj io.Reader) {
 	ctx := c.Request.Context()
 	rid := ctxs.RequestId(ctx)
-	c.Writer.Header().Set("X-CSMS-Request-ID", rid)
+	c.Writer.Header().Set("X-CSMS-Request-Id", rid)
 	c.DataFromReader(
 		http.StatusOK,
 		fileSize,

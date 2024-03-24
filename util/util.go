@@ -11,3 +11,18 @@
  */
 
 package util
+
+import (
+	"context"
+	"io"
+
+	"gitee.com/CertificateAndSigningManageSystem/common/log"
+)
+
+// CloseIO 关闭流
+func CloseIO(ctx context.Context, io io.Closer) {
+	if io == nil {
+		return
+	}
+	log.ErrorIf(ctx, io.Close())
+}

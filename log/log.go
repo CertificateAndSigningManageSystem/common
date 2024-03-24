@@ -14,7 +14,9 @@ package log
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"gitee.com/CertificateAndSigningManageSystem/common/errs"
 	"io"
 	"os"
 	"path"
@@ -321,7 +323,27 @@ func suitCtxLine(ctx context.Context) context.Context {
 func separateArgs(args ...any) string {
 	arr := make([]string, len(args))
 	for i := range args {
-		arr[i] = fmt.Sprint(args[i])
+		switch v := args[i].(type) {
+		case json.RawMessage:
+			arr[i] = string(v)
+		case string:
+			arr[i] = v
+		case *errs.Error:
+			arr[i] = v.WrappedErr.Error()
+		case error:
+			arr[i] = v.Error()
+		case []byte:
+			arr[i] = string(v)
+		case []rune:
+			arr[i] = string(v)
+		default:
+			bs, err := json.Marshal(v)
+			if err != nil {
+				arr[i] = fmt.Sprint(v)
+			} else {
+				arr[i] = string(bs)
+			}
+		}
 	}
 	return strings.Join(arr, " ")
 }

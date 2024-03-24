@@ -30,6 +30,7 @@ import (
 	"gitee.com/CertificateAndSigningManageSystem/common/ctxs"
 )
 
+// InitialLog 初始化日志
 func InitialLog(logDir, module string, maxAge, rotationTime time.Duration, debug bool) {
 	err := os.MkdirAll(logDir, 0777)
 	if err != nil {
@@ -227,15 +228,20 @@ func GetStack() string {
 }
 
 func (f *GormLogFormatter) Printf(_ string, args ...any) {
+	if len(args) < 2 {
+		Warn(ctxs.NewCtx("Printf"), "gorm log unknown fmt 未知gorm日志格式")
+		return
+	}
 	ctx := ctxs.WithCallLine(nil, trimCallerLine(fmt.Sprint(args[0])))
 	err, _ := args[1].(error)
-	if err != nil {
+	if err != nil && len(args) >= 3 {
 		Errorf(ctx, "%s [%.3fms] %s", err, args[2], args[len(args)-1])
 	} else {
 		Infof(ctx, "[%.3fms] [rows:%v] %s", args[1], args[len(args)-2], args[len(args)-1])
 	}
 }
 
+// Format 格式化日志
 func (formatter *logFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	sb := strings.Builder{}
 	sb.WriteString(entry.Time.Format("2006-01-02 15:04:05.000 "))
@@ -244,7 +250,7 @@ func (formatter *logFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	sb.WriteString(moduleName)
 	sb.WriteString(" ")
 	ctx := entry.Context
-	if rid := ctxs.RequestID(ctx); len(rid) > 0 {
+	if rid := ctxs.RequestId(ctx); len(rid) > 0 {
 		sb.WriteString(rid)
 		sb.WriteString(" ")
 	}
@@ -256,16 +262,20 @@ func (formatter *logFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 			sb.WriteString(fmt.Sprintf("%s:%d ", file, entry.Caller.Line))
 		}
 	}
-	if ip := ctxs.RequestIP(ctx); len(ip) > 0 {
-		sb.WriteString(ip)
+	if fn := ctxs.Func(ctx); len(fn) > 0 {
+		sb.WriteString(fn)
 		sb.WriteString(" ")
 	}
-	if userId := ctxs.UserID(ctx); userId > 0 {
+	if userId := ctxs.UserId(ctx); userId > 0 {
 		sb.WriteString(strconv.Itoa(int(userId)))
 		sb.WriteString(" ")
 	}
-	if auth := ctxs.APIAuthID(ctx); auth > 0 {
+	if auth := ctxs.APIAuthId(ctx); auth > 0 {
 		sb.WriteString(strconv.Itoa(int(auth)))
+		sb.WriteString(" ")
+	}
+	if ip := ctxs.RequestIP(ctx); len(ip) > 0 {
+		sb.WriteString(ip)
 		sb.WriteString(" ")
 	}
 	if ph := ctxs.RequestPath(ctx); len(ph) > 0 {

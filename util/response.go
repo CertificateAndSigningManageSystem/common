@@ -29,7 +29,7 @@ import (
 // Fail 响应失败
 func Fail(c *gin.Context, status int, msg string) {
 	ctx := c.Request.Context()
-	rid := ctxs.RequestID(ctx)
+	rid := ctxs.RequestId(ctx)
 	c.Writer.Header().Set("Content-Type", "application/json; charset=utf8")
 	c.Writer.Header().Set("Content-Length", "0")
 	c.Writer.Header().Set("CSMS-Error-Message", url.QueryEscape(msg))
@@ -40,14 +40,14 @@ func Fail(c *gin.Context, status int, msg string) {
 // Success 响应成功
 func Success(c *gin.Context, v any) {
 	ctx := c.Request.Context()
-	rid := ctxs.RequestID(ctx)
+	rid := ctxs.RequestId(ctx)
 	rspBody, _ := json.Marshal(v)
 	if len(rspBody) < 5*1024 {
 		log.Info(ctx, "rsqBody is", string(rspBody))
 	}
 	c.Writer.Header().Set("Content-Type", "application/json; charset=utf8")
 	c.Writer.Header().Set("Content-Length", strconv.Itoa(len(rspBody)))
-	c.Writer.Header().Set("CSMS-Request-ID", rid)
+	c.Writer.Header().Set("X-CSMS-Request-ID", rid)
 	c.Writer.WriteHeader(http.StatusOK)
 	n, err := c.Writer.Write(rspBody)
 	log.ErrorIf(ctx, err)
@@ -59,8 +59,8 @@ func Success(c *gin.Context, v any) {
 // VendFile 响应文件流
 func VendFile(c *gin.Context, fileSize int64, fileName string, fileObj io.Reader) {
 	ctx := c.Request.Context()
-	rid := ctxs.RequestID(ctx)
-	c.Writer.Header().Set("CSMS-Request-ID", rid)
+	rid := ctxs.RequestId(ctx)
+	c.Writer.Header().Set("X-CSMS-Request-ID", rid)
 	c.DataFromReader(
 		http.StatusOK,
 		fileSize,

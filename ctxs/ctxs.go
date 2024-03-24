@@ -19,34 +19,35 @@ import (
 )
 
 const (
-	ctxKey_UserID      ctxKey = "ctxKey_UserID"
-	ctxKey_APIAuthID   ctxKey = "ctxKey_APIAuthID"
+	ctxKey_UserId      ctxKey = "ctxKey_UserId"
+	ctxKey_APIAuthId   ctxKey = "ctxKey_APIAuthId"
 	ctxKey_Trace       ctxKey = "ctxKey_Trace"
 	ctxKey_CallLine    ctxKey = "ctxKey_CallLine"
-	ctxKey_RequestID   ctxKey = "ctxKey_RequestID"
+	ctxKey_RequestId   ctxKey = "ctxKey_RequestId"
 	ctxKey_RequestIP   ctxKey = "ctxKey_RequestIP"
 	ctxKey_RequestPath ctxKey = "ctxKey_RequestPath"
 	ctxKey_Transaction ctxKey = "ctxKey_Transaction"
+	ctxKey_Func        ctxKey = "ctxKey_Func"
 )
 
 type ctxKey string
 
-// UserID 获取ctx中的用户标识
-func UserID(ctx context.Context) uint {
+// UserId 获取ctx中的用户Id
+func UserId(ctx context.Context) uint {
 	if ctx == nil {
 		return 0
 	}
-	value := ctx.Value(ctxKey_UserID)
+	value := ctx.Value(ctxKey_UserId)
 	userID, _ := value.(uint)
 	return userID
 }
 
-// APIAuthID 获取ctx中的API凭证标识
-func APIAuthID(ctx context.Context) uint {
+// APIAuthId 获取ctx中的API凭证Id
+func APIAuthId(ctx context.Context) uint {
 	if ctx == nil {
 		return 0
 	}
-	value := ctx.Value(ctxKey_APIAuthID)
+	value := ctx.Value(ctxKey_APIAuthId)
 	apiAuthID, _ := value.(uint)
 	return apiAuthID
 }
@@ -61,7 +62,7 @@ func Trace(ctx context.Context) string {
 	return trace
 }
 
-// CallLine 获取log打印行
+// CallLine 获取log打印代码行
 func CallLine(ctx context.Context) string {
 	if ctx == nil {
 		return ""
@@ -71,16 +72,16 @@ func CallLine(ctx context.Context) string {
 	return callLine
 }
 
-// RequestID 获取上下文中的rid
-func RequestID(ctx context.Context) string {
+// RequestId 获取上下文中的链路Id
+func RequestId(ctx context.Context) string {
 	if ctx == nil {
 		return ""
 	}
-	rid, _ := ctx.Value(ctxKey_RequestID).(string)
+	rid, _ := ctx.Value(ctxKey_RequestId).(string)
 	return rid
 }
 
-// RequestIP 获取上下文中的ip
+// RequestIP 获取上下文中的请求IP
 func RequestIP(ctx context.Context) string {
 	if ctx == nil {
 		return ""
@@ -89,7 +90,7 @@ func RequestIP(ctx context.Context) string {
 	return ip
 }
 
-// RequestPath 获取上下文中的path
+// RequestPath 获取上下文中的请求Path
 func RequestPath(ctx context.Context) string {
 	if ctx == nil {
 		return ""
@@ -98,6 +99,7 @@ func RequestPath(ctx context.Context) string {
 	return path
 }
 
+// Transaction 获取上下文中的数据库事务对象
 func Transaction(ctx context.Context) *gorm.DB {
 	if ctx == nil {
 		return nil
@@ -106,20 +108,29 @@ func Transaction(ctx context.Context) *gorm.DB {
 	return tx
 }
 
-// WithUserID 设置上下文中的UserID
-func WithUserID(ctx context.Context, userID uint) context.Context {
+// Func 获取上下文中的函数信息
+func Func(ctx context.Context) string {
 	if ctx == nil {
-		ctx = context.Background()
+		return ""
 	}
-	return context.WithValue(ctx, ctxKey_UserID, userID)
+	fn, _ := ctx.Value(ctxKey_Func).(string)
+	return fn
 }
 
-// WithAPIAuthID 设置上下文中的AuthID
-func WithAPIAuthID(ctx context.Context, authID uint) context.Context {
+// WithUserId 设置上下文中的UserId
+func WithUserId(ctx context.Context, userId uint) context.Context {
 	if ctx == nil {
 		ctx = context.Background()
 	}
-	return context.WithValue(ctx, ctxKey_APIAuthID, authID)
+	return context.WithValue(ctx, ctxKey_UserId, userId)
+}
+
+// WithAPIAuthId 设置上下文中的AuthId
+func WithAPIAuthId(ctx context.Context, authId uint) context.Context {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	return context.WithValue(ctx, ctxKey_APIAuthId, authId)
 }
 
 // WithTrace ctx添加堆栈信息
@@ -138,15 +149,15 @@ func WithCallLine(ctx context.Context, callLine string) context.Context {
 	return context.WithValue(ctx, ctxKey_CallLine, callLine)
 }
 
-// WithRequestID 上下文附带链路请求标识
-func WithRequestID(ctx context.Context, rid string) context.Context {
+// WithRequestId 上下文附带链路请求标识
+func WithRequestId(ctx context.Context, rid string) context.Context {
 	if ctx == nil {
 		ctx = context.Background()
 	}
-	return context.WithValue(ctx, ctxKey_RequestID, rid)
+	return context.WithValue(ctx, ctxKey_RequestId, rid)
 }
 
-// WithRequestIP 上下文附带链路请求ip
+// WithRequestIP 上下文附带链路请求IP
 func WithRequestIP(ctx context.Context, ip string) context.Context {
 	if ctx == nil {
 		ctx = context.Background()
@@ -154,7 +165,7 @@ func WithRequestIP(ctx context.Context, ip string) context.Context {
 	return context.WithValue(ctx, ctxKey_RequestIP, ip)
 }
 
-// WithRequestPath 上下文附带链路请求path
+// WithRequestPath 上下文附带链路请求Path
 func WithRequestPath(ctx context.Context, path string) context.Context {
 	if ctx == nil {
 		ctx = context.Background()
@@ -168,4 +179,29 @@ func WithTransaction(ctx context.Context, tx *gorm.DB) context.Context {
 		ctx = context.Background()
 	}
 	return context.WithValue(ctx, ctxKey_Transaction, tx)
+}
+
+// WithFunc 设置上下文函数信息
+func WithFunc(ctx context.Context, fn string) context.Context {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	return context.WithValue(ctx, ctxKey_Func, fn)
+}
+
+// NewCtx 新建上下文对象
+func NewCtx(fn string) context.Context {
+	ctx := context.Background()
+	ctx = WithFunc(ctx, fn)
+	return ctx
+}
+
+// CloneCtx 克隆上下文对象，复制请求Id，请求IP、函数和用户凭证信息。
+func CloneCtx(ctx context.Context) context.Context {
+	newCtx := NewCtx(Func(ctx))
+	newCtx = WithRequestId(newCtx, RequestId(ctx))
+	newCtx = WithRequestIP(newCtx, RequestIP(ctx))
+	newCtx = WithAPIAuthId(newCtx, APIAuthId(ctx))
+	newCtx = WithUserId(newCtx, UserId(ctx))
+	return newCtx
 }

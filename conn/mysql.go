@@ -29,7 +29,8 @@ import (
 
 var mysqlClient *gorm.DB
 
-func InitialMySQL(ctx context.Context, user, pass, host, port, db string) {
+// InitialMySQL 初始化MySQL
+func InitialMySQL(ctx context.Context, user, pass, host, port, db string, maxIdea, maxOpen int) {
 	obj, err := gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=true&loc=Local",
 		user, pass, host, port, db)),
 		&gorm.Config{
@@ -41,17 +42,17 @@ func InitialMySQL(ctx context.Context, user, pass, host, port, db string) {
 				// Colorful: isLocal,
 			})})
 	if err != nil {
-		log.Fatal(ctx, err)
+		log.Fatal(ctx, "init mysql error 初始化mysql失败", err)
 	}
 	sql, err := obj.DB()
 	if err != nil {
 		log.Fatal(ctx, err)
 	}
-	sql.SetMaxIdleConns(5)
-	sql.SetMaxOpenConns(100)
+	sql.SetMaxIdleConns(maxIdea)
+	sql.SetMaxOpenConns(maxOpen)
 	// obj = obj.Debug()
 	mysqlClient = obj
-	log.Info(ctx, "init mysql success")
+	log.Info(ctx, "init mysql success 初始化mysql成功")
 }
 
 // GetMySQLClient 获取MySQL客户端
@@ -64,6 +65,7 @@ func GetMySQLClient(ctx context.Context) *gorm.DB {
 	return mysqlClient.WithContext(ctx)
 }
 
+// AutoMigrateAllTable 创建数据库表结构
 func AutoMigrateAllTable(ctx context.Context) error {
 	return GetMySQLClient(ctx).AutoMigrate(
 		&model.TApp{},

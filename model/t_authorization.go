@@ -17,7 +17,7 @@ import "time"
 // TAuthorization 凭证信息表
 type TAuthorization struct {
 	Id         uint      `gorm:"column:id; type:int unsigned; primaryKey; autoIncrement; comment:主码" json:"id,omitempty"`
-	AppId      string    `gorm:"column:app_id; type:int unsigned not null; comment:应用Id，外码; index:idx_app_id" json:"appId,omitempty"`
+	AppId      uint      `gorm:"column:app_id; type:int unsigned not null; comment:应用Id，外码; index:idx_app_id" json:"appId,omitempty"`
 	AuthId     string    `gorm:"column:auth_id; type:varchar(64); comment:凭证Id" json:"authId,omitempty"`
 	UserId     uint      `gorm:"column:user_id; type:int unsigned; comment:用户Id，外码" json:"userId,omitempty"`
 	IP         string    `gorm:"column:ip; type:varchar(1024); comment:调用IP" json:"ip,omitempty"`

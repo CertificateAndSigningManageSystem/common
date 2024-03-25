@@ -54,3 +54,7 @@ func NewSystemBusyErr(err error) error {
 func (e *Error) Error() string {
 	return e.Msg
 }
+
+func (e *Error) Unwrap() error {
+	return e.WrappedErr
+}

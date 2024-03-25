@@ -40,7 +40,7 @@ func InitialLog(logDir, module string, maxAge, rotationTime time.Duration, debug
 	}
 	baseLogFile := path.Join(logDir, "csms")
 	debugWriter, err := rotatelogs.New(
-		baseLogFile+"_debug_%Y-%m-%d %H:%M.log",
+		baseLogFile+"_debug_%Y%m%d%H%M.log",
 		rotatelogs.WithMaxAge(maxAge),
 		rotatelogs.WithRotationTime(rotationTime),
 	)
@@ -48,7 +48,7 @@ func InitialLog(logDir, module string, maxAge, rotationTime time.Duration, debug
 		panic("rotate logs error " + err.Error())
 	}
 	infoWriter, err := rotatelogs.New(
-		baseLogFile+"_info_%Y-%m-%d %H:%M.log",
+		baseLogFile+"_info_%Y%m%d%H%M.log",
 		// rotatelogs.WithLinkName(baseLogFile),      // 生成软链，指向最新日志文件
 		rotatelogs.WithMaxAge(maxAge),
 		rotatelogs.WithRotationTime(rotationTime),
@@ -57,7 +57,7 @@ func InitialLog(logDir, module string, maxAge, rotationTime time.Duration, debug
 		panic("rotate logs error " + err.Error())
 	}
 	errorWriter, err := rotatelogs.New(
-		baseLogFile+"_error_%Y-%m-%d %H:%M.log",
+		baseLogFile+"_error_%Y%m%d%H%M.log",
 		rotatelogs.WithMaxAge(maxAge),
 		rotatelogs.WithRotationTime(rotationTime),
 	)

@@ -42,7 +42,7 @@ func InitialMySQL(ctx context.Context, user, pass, host, port, db string, maxIde
 				// Colorful: isLocal,
 			})})
 	if err != nil {
-		log.Fatal(ctx, "init mysql error 初始化mysql失败", err)
+		log.Fatal(ctx, "init mysql error", err)
 	}
 	sql, err := obj.DB()
 	if err != nil {
@@ -52,7 +52,7 @@ func InitialMySQL(ctx context.Context, user, pass, host, port, db string, maxIde
 	sql.SetMaxOpenConns(maxOpen)
 	// obj = obj.Debug()
 	mysqlClient = obj
-	log.Info(ctx, "init mysql success 初始化mysql成功")
+	log.Info(ctx, "init mysql success")
 }
 
 // GetMySQLClient 获取MySQL客户端

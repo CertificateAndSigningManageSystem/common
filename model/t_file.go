@@ -25,6 +25,7 @@ type TFile struct {
 	MD5        string    `gorm:"column:md5; type:char(32); comment:散列值" json:"md5,omitempty"`
 	SHA1       string    `gorm:"column:sha1; type:char(40); comment:散列值" json:"sha1,omitempty"`
 	SHA256     string    `gorm:"column:sha256; type:char(64); comment:散列值" json:"sha256,omitempty"`
+	Size       int       `gorm:"column:size; type:int unsigned; comment:文件大小" json:"size,omitempty"`
 	CreateTime time.Time `gorm:"column:create_time; type:timestamp not null; comment:上传时间; index:idx_create_time" json:"createTime,omitempty"`
 }
 

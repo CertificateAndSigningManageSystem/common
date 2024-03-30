@@ -42,12 +42,21 @@ func Unwrap(err error) error {
 	return nil
 }
 
-// NewSystemBusyErr 新建错误
+// NewSystemBusyErr 新建系统错误
 func NewSystemBusyErr(err error) error {
 	return &Error{
-		Msg:        "system busy 系统繁忙",
+		Msg:        "系统繁忙",
 		WrappedErr: err,
 		HTTPStatus: http.StatusInternalServerError,
+	}
+}
+
+// NewParamsErr 新建参数错误
+func NewParamsErr(err error) error {
+	return &Error{
+		HTTPStatus: http.StatusBadRequest,
+		Msg:        "请求参数非法",
+		WrappedErr: err,
 	}
 }
 

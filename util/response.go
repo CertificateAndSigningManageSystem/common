@@ -47,7 +47,7 @@ func FailByErr(c *gin.Context, err error) {
 		e = &errs.Error{
 			HTTPStatus: http.StatusInternalServerError,
 		}
-		log.Error(ctx, "unknown error 未知err对象", err)
+		log.Error(ctx, "unknown error", err)
 	}
 	rid := ctxs.RequestId(ctx)
 	c.Writer.Header().Set("Content-Type", "application/json; charset=utf8")
@@ -72,7 +72,7 @@ func Success(c *gin.Context, v any) {
 	n, err := c.Writer.Write(rspBody)
 	log.ErrorIf(ctx, err)
 	if n != len(rspBody) {
-		log.Errorf(ctx, "write length not equal body length 写入数据长度不等于响应体长度 %d!=%d", n, len(rspBody))
+		log.Errorf(ctx, "write length not equal body length %d!=%d", n, len(rspBody))
 	}
 }
 

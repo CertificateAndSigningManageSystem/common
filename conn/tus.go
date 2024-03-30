@@ -14,33 +14,29 @@ package conn
 
 import (
 	"context"
+	"net/http"
 
-	"github.com/rabbitmq/amqp091-go"
+	"gitee.com/ivfzhou/tus_client"
 
 	"gitee.com/CertificateAndSigningManageSystem/common/log"
 )
 
-var (
-	rabbitmqClient  *amqp091.Connection
-	rabbitmqChannel *amqp091.Channel
-)
+var tusClient tus_client.TusClient
 
-// InitialRabbitMQ 初始化RabbitMQ
-func InitialRabbitMQ(ctx context.Context, uri string) {
-	connection, err := amqp091.Dial(uri)
+// InitialTusClient 初始化tus客户端
+func InitialTusClient(ctx context.Context, host string) {
+	tusClient = tus_client.NewClient(host)
+	options, err := tusClient.Options(ctx)
 	if err != nil {
-		log.Fatal(ctx, "initial rabbitmq error", err)
+		log.Fatal(ctx, err)
 	}
-	channel, err := connection.Channel()
-	if err != nil {
-		log.Fatal(ctx, "initial rabbitmq error", err)
+	if options.HTTPStatus != http.StatusOK && options.HTTPStatus != http.StatusNoContent {
+		log.Fatal(ctx, "tus options error", options.HTTPStatus)
 	}
-	rabbitmqClient = connection
-	rabbitmqChannel = channel
-	log.Info(ctx, "init rabbitmq success")
+	log.Info(ctx, "init tus client success")
 }
 
-// GetRabbitMQChannel 获取RabbitMQ通道
-func GetRabbitMQChannel(ctx context.Context) *amqp091.Channel {
-	return rabbitmqChannel
+// GetTusClient 获取tus客户端
+func GetTusClient(ctx context.Context) tus_client.TusClient {
+	return tusClient
 }

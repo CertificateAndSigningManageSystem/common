@@ -26,6 +26,10 @@ import (
 const (
 	// 分布式锁键格式
 	CacheKey_LockFmt = "lock:%s:string"
+	// 分片上传文件
+	CacheKey_UploadFiles = "upload:files:hash"
+	// 记录唯一id缓存键
+	CacheKey_GenIdFmt = "gen:id:%s:set"
 )
 
 var redisClient *redis.Client

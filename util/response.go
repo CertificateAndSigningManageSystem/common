@@ -76,6 +76,15 @@ func Success(c *gin.Context, v any) {
 	}
 }
 
+// SuccessMsg 响应成功
+func SuccessMsg(c *gin.Context, v string) {
+	ctx := c.Request.Context()
+	rid := ctxs.RequestId(ctx)
+	c.Writer.Header().Set("X-CSMS-Request-Id", rid)
+	c.Writer.Header().Set("X-CSMS-Message", v)
+	c.Writer.WriteHeader(http.StatusOK)
+}
+
 // VendFile 响应文件流
 func VendFile(c *gin.Context, fileSize int64, fileName string, fileObj io.Reader) {
 	ctx := c.Request.Context()

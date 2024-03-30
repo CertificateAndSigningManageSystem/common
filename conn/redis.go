@@ -30,6 +30,8 @@ const (
 	CacheKey_UploadFiles = "upload:files:hash"
 	// 记录唯一id缓存键
 	CacheKey_GenIdFmt = "gen:id:%s:set"
+	// 分片上传信息
+	CacheKey_UploadPartFmt = "upload:part:%s:sset"
 )
 
 var redisClient *redis.Client

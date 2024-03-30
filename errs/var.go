@@ -12,14 +12,10 @@
 
 package errs
 
-import (
-	"fmt"
-	"net/http"
-)
+import "net/http"
 
 // ErrUnknownUser 登录时未知用户
 var ErrUnknownUser error = &Error{
 	HTTPStatus: http.StatusUnauthorized,
 	Msg:        "unknown user",
-	WrappedErr: fmt.Errorf("unknown user"),
 }

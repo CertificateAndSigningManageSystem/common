@@ -12,10 +12,36 @@
 
 package errs
 
-import "net/http"
+import (
+	"net/http"
+)
 
 // ErrUnknownUser 登录时未知用户
 var ErrUnknownUser error = &Error{
 	HTTPStatus: http.StatusUnauthorized,
 	Msg:        "unknown user",
+}
+
+// ErrFileNotExists 文件不存在
+var ErrFileNotExists error = &Error{
+	HTTPStatus: http.StatusNotFound,
+	Msg:        "file not exists",
+}
+
+// ErrIllegalRequest 非法请求
+var ErrIllegalRequest error = &Error{
+	HTTPStatus: http.StatusUnauthorized,
+	Msg:        "illegal request",
+}
+
+// ErrTooManyRequest 请求频繁
+var ErrTooManyRequest error = &Error{
+	HTTPStatus: http.StatusTooManyRequests,
+	Msg:        "too many request",
+}
+
+// ErrNeedAuth 无授权或授权非法
+var ErrNeedAuth error = &Error{
+	HTTPStatus: http.StatusUnauthorized,
+	Msg:        "need authorization 未授权",
 }

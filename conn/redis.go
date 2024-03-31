@@ -16,6 +16,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"runtime"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -32,6 +33,8 @@ const (
 	CacheKey_GenIdFmt = "gen:id:%s:set"
 	// 分片上传信息
 	CacheKey_UploadPartFmt = "upload:part:%s:sset"
+	// 定时任务记录
+	CacheKey_CronRecordFmt = "cron:%s:%s"
 )
 
 var redisClient *redis.Client
@@ -62,6 +65,22 @@ func Lock(ctx context.Context, key string, timeout time.Duration) bool {
 		log.Error(ctx, "redis lock error", err)
 	}
 	return b
+}
+
+// LockWait 加锁
+func LockWait(ctx context.Context, key string, wait time.Duration) bool {
+	now := time.Now()
+	if Lock(ctx, key, 0) {
+		return true
+	}
+	for time.Since(now) < wait {
+		runtime.Gosched()
+		time.Sleep(time.Millisecond * 100)
+		if Lock(ctx, key, 0) {
+			return true
+		}
+	}
+	return false
 }
 
 // Unlock 解锁

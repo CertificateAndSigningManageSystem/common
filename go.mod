@@ -13,6 +13,7 @@ module gitee.com/CertificateAndSigningManageSystem/common
 go 1.22
 
 require (
+	gitee.com/ivfzhou/gotools/v4 v4.0.0
 	gitee.com/ivfzhou/tus_client v0.2.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
@@ -25,7 +26,6 @@ require (
 )
 
 require (
-	gitee.com/ivfzhou/gotools/v4 v4.0.0 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect

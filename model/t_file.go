@@ -29,6 +29,9 @@ type TFile struct {
 	CreateTime time.Time `gorm:"column:create_time; type:timestamp not null; comment:上传时间; index:idx_create_time" json:"createTime,omitempty"`
 }
 
-func (*TFile) TableName() string {
+func (t *TFile) TableName() string {
+	if len(t.FileId) >= 6 {
+		return t.FileId[:6]
+	}
 	return time.Now().Format("t_file_200601")
 }

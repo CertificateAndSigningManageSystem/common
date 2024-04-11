@@ -30,7 +30,7 @@ var ErrFileNotExists error = &Error{
 
 // ErrIllegalRequest 非法请求
 var ErrIllegalRequest error = &Error{
-	HTTPStatus: http.StatusUnauthorized,
+	HTTPStatus: http.StatusBadRequest,
 	Msg:        "illegal request",
 }
 
@@ -43,5 +43,5 @@ var ErrTooManyRequest error = &Error{
 // ErrNeedAuth 无授权或授权非法
 var ErrNeedAuth error = &Error{
 	HTTPStatus: http.StatusUnauthorized,
-	Msg:        "need authorization 未授权",
+	Msg:        "need authorization",
 }

@@ -54,7 +54,7 @@ func NewSystemBusyErr(err error) error {
 // NewParamsErr 新建参数错误
 func NewParamsErr(err error) error {
 	return &Error{
-		HTTPStatus: http.StatusBadRequest,
+		HTTPStatus: http.StatusExpectationFailed,
 		Msg:        "parameters invalid",
 		WrappedErr: err,
 	}

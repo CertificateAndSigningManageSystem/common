@@ -12,9 +12,7 @@
 
 package errs
 
-import (
-	"net/http"
-)
+import "net/http"
 
 // ErrUnknownUser 登录时未知用户
 var ErrUnknownUser error = &Error{
@@ -30,7 +28,7 @@ var ErrFileNotExists error = &Error{
 
 // ErrIllegalRequest 非法请求
 var ErrIllegalRequest error = &Error{
-	HTTPStatus: http.StatusBadRequest,
+	HTTPStatus: http.StatusExpectationFailed,
 	Msg:        "illegal request",
 }
 
@@ -40,8 +38,8 @@ var ErrTooManyRequest error = &Error{
 	Msg:        "too many request",
 }
 
-// ErrNeedAuth 无授权或授权非法
-var ErrNeedAuth error = &Error{
-	HTTPStatus: http.StatusUnauthorized,
+// ErrNoAuth 无授权或授权非法
+var ErrNoAuth error = &Error{
+	HTTPStatus: http.StatusForbidden,
 	Msg:        "need authorization",
 }

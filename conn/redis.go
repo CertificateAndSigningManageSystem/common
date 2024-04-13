@@ -35,6 +35,8 @@ const (
 	CacheKey_UploadPartFmt = "upload:part:%s:sset"
 	// 定时任务记录
 	CacheKey_CronRecordFmt = "cron:%s:%s"
+	// 用户会话
+	CacheKey_UserSession = "user:session:%s:string"
 )
 
 var redisClient *redis.Client
@@ -50,6 +52,14 @@ func InitialRedis(ctx context.Context, addr, passwd string, db int) {
 		log.Fatal(ctx, "cannot connect redis", err)
 	}
 	log.Info(ctx, "init redis success")
+}
+
+// CloseRedisClient 关闭连接
+func CloseRedisClient(ctx context.Context)  {
+	err := redisClient.Close()
+	if err != nil {
+		log.Error(ctx, err)
+	}
 }
 
 // GetRedisClient 获取Redis客户端

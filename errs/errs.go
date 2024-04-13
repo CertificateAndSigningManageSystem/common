@@ -60,6 +60,14 @@ func NewParamsErr(err error) error {
 	}
 }
 
+// NewParamsErrMsg 新建参数错误
+func NewParamsErrMsg(msg string) error {
+	return &Error{
+		HTTPStatus: http.StatusExpectationFailed,
+		Msg:        msg,
+	}
+}
+
 func (e *Error) Error() string {
 	return e.Msg
 }

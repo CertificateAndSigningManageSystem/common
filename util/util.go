@@ -14,9 +14,14 @@ package util
 
 import (
 	"context"
+	"crypto/md5"
+	"crypto/sha1"
+	"crypto/sha256"
+	"encoding/hex"
 	"io"
 	"net"
 	"time"
+	"unicode"
 
 	"gitee.com/ivfzhou/gotools/v4"
 
@@ -74,4 +79,41 @@ func GetLocalNoLoopIP() string {
 		}
 	}
 	return ""
+}
+
+// IsAllHanCharacters 字符串是否是汉字
+func IsAllHanCharacters(str string) bool {
+	if len(str) <= 0 {
+		return false
+	}
+	for _, v := range []rune(str) {
+		if !unicode.Is(unicode.Han, v) {
+			return false
+		}
+	}
+	return true
+}
+
+// IsAllLetterCharacters 字符串是否是字母
+func IsAllLetterCharacters(str string) bool {
+	if len(str) <= 0 {
+		return false
+	}
+	for _, v := range []rune(str) {
+		if !unicode.IsLetter(v) {
+			return false
+		}
+	}
+	return true
+}
+
+// CalcSum 计算摘要
+func CalcSum(bs []byte) (_md5, _sha1, _sha256 string) {
+	sum := md5.Sum(bs)
+	_md5 = hex.EncodeToString(sum[:])
+	sum1 := sha1.Sum(bs)
+	_sha1 = hex.EncodeToString(sum1[:])
+	sum2 := sha256.Sum256(bs)
+	_sha256 = hex.EncodeToString(sum2[:])
+	return
 }

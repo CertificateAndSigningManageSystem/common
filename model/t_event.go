@@ -58,6 +58,9 @@ type TEvent struct {
 	Content   string    `gorm:"column:content type:text; comment:内容"`
 }
 
-func (*TEvent) TableName() string {
-	return "t_event"
+func (t *TEvent) TableName() string {
+	if t.OccurTime.IsZero() {
+		return t.OccurTime.Format("t_event_200601")
+	}
+	return time.Now().Format("t_event_200601")
 }

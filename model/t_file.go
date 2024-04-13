@@ -12,7 +12,10 @@
 
 package model
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // TFile 文件信息表
 type TFile struct {
@@ -31,7 +34,7 @@ type TFile struct {
 
 func (t *TFile) TableName() string {
 	if len(t.FileId) >= 6 {
-		return t.FileId[:6]
+		return fmt.Sprintf("t_file_%s", t.FileId[:6])
 	}
 	return time.Now().Format("t_file_200601")
 }

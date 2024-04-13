@@ -44,3 +44,15 @@ func InitialRabbitMQ(ctx context.Context, uri string) {
 func GetRabbitMQChannel(ctx context.Context) *amqp091.Channel {
 	return rabbitmqChannel
 }
+
+// CloseRabbitMQClient 关闭连接
+func CloseRabbitMQClient(ctx context.Context) {
+	err := rabbitmqChannel.Close()
+	if err != nil {
+		log.Error(ctx, err)
+	}
+	err = rabbitmqClient.Close()
+	if err != nil {
+		log.Error(ctx, err)
+	}
+}

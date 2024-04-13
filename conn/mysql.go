@@ -65,6 +65,19 @@ func GetMySQLClient(ctx context.Context) *gorm.DB {
 	return mysqlClient.WithContext(ctx)
 }
 
+// CloseMysqlClient 断开连接
+func CloseMysqlClient(ctx context.Context) {
+	db, err := mysqlClient.DB()
+	if err != nil {
+		log.Error(ctx, err)
+		return
+	}
+	err = db.Close()
+	if err != nil {
+		log.Error(ctx, err)
+	}
+}
+
 // AutoMigrateAllTable 创建数据库表结构
 func AutoMigrateAllTable(ctx context.Context) error {
 	return GetMySQLClient(ctx).AutoMigrate(

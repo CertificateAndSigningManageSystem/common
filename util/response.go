@@ -81,7 +81,7 @@ func SuccessMsg(c *gin.Context, v string) {
 	ctx := c.Request.Context()
 	rid := ctxs.RequestId(ctx)
 	c.Writer.Header().Set("X-Csms-Request-Id", rid)
-	c.Writer.Header().Set("X-Csms-Message", v)
+	c.Writer.Header().Set("X-Csms-Message", url.QueryEscape(v))
 	c.Writer.WriteHeader(http.StatusOK)
 }
 

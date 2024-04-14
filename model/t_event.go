@@ -52,14 +52,14 @@ type TEvent struct {
 		14=删除OpenAPI凭证,15=申请Android证书,16=申请描述文件,17=删除证书,
 		18=重置登录连续失败次数,19=申请Push证书,20=注册测试设备,21=解绑测试设备,
 		22=绑定Apple账号,23=导出应用数据,24=GooglePlay证书下载,25=获取证书Facebook散列" json:"type,omitempty"`
-	OccurTime time.Time `gorm:"column:occur_time type:timestamp not null; comment:发生时间; index:idx_occur_time" json:"occurTime,omitempty"`
-	UserId    uint      `gorm:"column:user_id type:int unsigned not null; comment:关联人，外码; index:idx_user_id" json:"userId,omitempty"`
-	AppId     uint      `gorm:"column:app_id type:int unsigned; comment:关联应用，外码; index:id_app_id" json:"appId,omitempty"`
-	Content   string    `gorm:"column:content type:text; comment:内容"`
+	OccurTime time.Time `gorm:"column:occur_time; type:timestamp not null; comment:发生时间; index:idx_occur_time" json:"occurTime,omitempty"`
+	UserId    uint      `gorm:"column:user_id; type:int unsigned not null; comment:关联人，外码; index:idx_user_id" json:"userId,omitempty"`
+	AppId     uint      `gorm:"column:app_id; type:int unsigned; comment:关联应用，外码; index:id_app_id" json:"appId,omitempty"`
+	Content   string    `gorm:"column:content; type:text; comment:内容"`
 }
 
 func (t *TEvent) TableName() string {
-	if t.OccurTime.IsZero() {
+	if !t.OccurTime.IsZero() {
 		return t.OccurTime.Format("t_event_200601")
 	}
 	return time.Now().Format("t_event_200601")

@@ -55,7 +55,7 @@ func InitialRedis(ctx context.Context, addr, passwd string, db int) {
 }
 
 // CloseRedisClient 关闭连接
-func CloseRedisClient(ctx context.Context)  {
+func CloseRedisClient(ctx context.Context) {
 	err := redisClient.Close()
 	if err != nil {
 		log.Error(ctx, err)

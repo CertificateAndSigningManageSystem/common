@@ -25,7 +25,7 @@ var tusClient tus_client.TusClient
 
 // InitialTusClient 初始化tus客户端
 func InitialTusClient(ctx context.Context, host string) {
-	tusClient = tus_client.NewClient(host)
+	tusClient = tus_client.NewClient(host, tus_client.WithLogger(&log.TusClientLogger{}))
 	options, err := tusClient.Options(ctx)
 	if err != nil {
 		log.Fatal(ctx, err)

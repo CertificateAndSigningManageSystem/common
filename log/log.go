@@ -92,6 +92,8 @@ var (
 
 type GormLogFormatter struct{}
 
+type TusClientLogger struct{}
+
 type logFormatter struct {
 	TimestampFormat string
 	LogFormat       string
@@ -229,18 +231,34 @@ func GetStack() string {
 	return strings.TrimSpace(sb.String())
 }
 
-func (f *GormLogFormatter) Printf(_ string, args ...any) {
-	if len(args) < 2 {
-		Warn(ctxs.NewCtx("Printf"), "gorm log unknown fmt 未知gorm日志格式")
+func (f *GormLogFormatter) Printf(s string, args ...any) {
+	if len(args) < 4 {
+		Warnf(ctxs.NewCtx("Printf"), "gorm log unknown fmt "+s, args)
 		return
 	}
 	ctx := ctxs.WithCallLine(nil, trimCallerLine(fmt.Sprint(args[0])))
 	err, _ := args[1].(error)
-	if err != nil && len(args) >= 3 {
-		Errorf(ctx, "%s [%.3fms] %s", err, args[2], args[len(args)-1])
+	if err != nil {
+		Errorf(ctx, "%s [%.3fms] %s", err, args[2], args[4])
 	} else {
-		Infof(ctx, "[%.3fms] [rows:%v] %s", args[1], args[len(args)-2], args[len(args)-1])
+		Infof(ctx, "[%.3fms] [rows:%v] %s", args[1], args[2], args[3])
 	}
+}
+
+func (l *TusClientLogger) Error(ctx context.Context, msg string) {
+	Error(ctx, msg)
+}
+
+func (l *TusClientLogger) Info(ctx context.Context, msg string) {
+	Info(ctx, msg)
+}
+
+func (l *TusClientLogger) Warn(ctx context.Context, msg string) {
+	Warn(ctx, msg)
+}
+
+func (l *TusClientLogger) Debug(ctx context.Context, msg string) {
+	Debug(ctx, msg)
 }
 
 // Format 格式化日志

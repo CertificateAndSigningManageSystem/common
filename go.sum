@@ -1,7 +1,7 @@
 gitee.com/ivfzhou/gotools/v4 v4.0.0 h1:icciJiTf2ybIeqdzEwfUeeTeQtFjYoSYbEzlkcD4QiE=
 gitee.com/ivfzhou/gotools/v4 v4.0.0/go.mod h1:xkyqU/VGybdnE/G+nI6dCHpqOWWpW3pXt9XLehAWyq4=
-gitee.com/ivfzhou/tus_client v0.2.0 h1:oAJOAsZTYNvHBKXMGImLhv/Vlj5lo5axgnQn6E/dggU=
-gitee.com/ivfzhou/tus_client v0.2.0/go.mod h1:4m258k+NTxWxm1P3BuKLeR/x5kB2DumYtMOKb5tGtKo=
+gitee.com/ivfzhou/tus_client v0.4.1 h1:LE735m1yj4rJodgVslcVtAfOY8V/uz0XoLvtrku48IU=
+gitee.com/ivfzhou/tus_client v0.4.1/go.mod h1:4m258k+NTxWxm1P3BuKLeR/x5kB2DumYtMOKb5tGtKo=
 github.com/bsm/ginkgo/v2 v2.12.0 h1:Ny8MWAHyOepLGlLKYmXG4IEkioBysk6GpaRTLC8zwWs=
 github.com/bsm/ginkgo/v2 v2.12.0/go.mod h1:SwYbGRRDovPVboqFv0tPTcG1sN61LM1Z4ARdbAV9g4c=
 github.com/bsm/gomega v1.27.10 h1:yeMWxP2pV2fG3FgAODIY8EiRE3dy0aeFYt4l7wh6yKA=

@@ -14,6 +14,7 @@ package errs
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -45,7 +46,7 @@ func Unwrap(err error) error {
 // NewSystemBusyErr 新建系统错误
 func NewSystemBusyErr(err error) error {
 	return &Error{
-		Msg:        "system busy",
+		Msg:        "系统繁忙",
 		WrappedErr: err,
 		HTTPStatus: http.StatusInternalServerError,
 	}
@@ -55,7 +56,7 @@ func NewSystemBusyErr(err error) error {
 func NewParamsErr(err error) error {
 	return &Error{
 		HTTPStatus: http.StatusExpectationFailed,
-		Msg:        "parameters invalid",
+		Msg:        "请求参数非法",
 		WrappedErr: err,
 	}
 }
@@ -69,7 +70,7 @@ func NewParamsErrMsg(msg string) error {
 }
 
 func (e *Error) Error() string {
-	return e.Msg
+	return fmt.Sprintf("http status %d: %s, inner error %v", e.HTTPStatus, e.Msg, e.WrappedErr)
 }
 
 func (e *Error) Unwrap() error {

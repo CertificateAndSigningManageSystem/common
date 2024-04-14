@@ -14,7 +14,7 @@ go 1.22
 
 require (
 	gitee.com/ivfzhou/gotools/v4 v4.0.0
-	gitee.com/ivfzhou/tus_client v0.2.0
+	gitee.com/ivfzhou/tus_client v0.4.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/rabbitmq/amqp091-go v1.9.0

@@ -34,6 +34,9 @@ type TAppleSignJob struct {
 	Status              uint8     `gorm:"column:status; type:tinyint unsigned; comment:状态，1=待签名,2=成功,3=失败" json:"status,omitempty"`
 }
 
-func (*TAppleSignJob) TableName() string {
-	return "t_apple_sign_job"
+func (t *TAppleSignJob) TableName() string {
+	if !t.CreateTime.IsZero() {
+		return t.CreateTime.Format("t_apple_sign_job_200601")
+	}
+	return time.Now().Format("t_apple_sign_job_200601")
 }

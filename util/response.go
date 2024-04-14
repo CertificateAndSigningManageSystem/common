@@ -33,10 +33,10 @@ func Fail(c *gin.Context, status int, msg string) {
 	ctx := c.Request.Context()
 	rid := ctxs.RequestId(ctx)
 	c.Writer.Header().Set("Content-Type", "application/json; charset=utf8")
-	c.Writer.Header().Set("Content-Length", "0")
-	c.Writer.Header().Set("X-CSMS-Error-Message", url.QueryEscape(msg))
-	c.Writer.Header().Set("X-CSMS-Request-Id", rid)
+	c.Writer.Header().Set("X-Csms-Error-Message", url.QueryEscape(msg))
+	c.Writer.Header().Set("X-Csms-Request-Id", rid)
 	c.Writer.WriteHeader(status)
+	c.Request = c.Request.WithContext(ctxs.AppendErrMsg(ctx, msg))
 }
 
 // FailByErr 响应失败
@@ -51,10 +51,10 @@ func FailByErr(c *gin.Context, err error) {
 	}
 	rid := ctxs.RequestId(ctx)
 	c.Writer.Header().Set("Content-Type", "application/json; charset=utf8")
-	c.Writer.Header().Set("Content-Length", "0")
-	c.Writer.Header().Set("X-CSMS-Error-Message", url.QueryEscape(e.Msg))
-	c.Writer.Header().Set("X-CSMS-Request-Id", rid)
+	c.Writer.Header().Set("X-Csms-Error-Message", url.QueryEscape(e.Msg))
+	c.Writer.Header().Set("X-Csms-Request-Id", rid)
 	c.Writer.WriteHeader(e.HTTPStatus)
+	c.Request = c.Request.WithContext(ctxs.AppendErrMsg(ctx, err.Error()))
 }
 
 // Success 响应成功
@@ -67,7 +67,7 @@ func Success(c *gin.Context, v any) {
 	}
 	c.Writer.Header().Set("Content-Type", "application/json; charset=utf8")
 	c.Writer.Header().Set("Content-Length", strconv.Itoa(len(rspBody)))
-	c.Writer.Header().Set("X-CSMS-Request-Id", rid)
+	c.Writer.Header().Set("X-Csms-Request-Id", rid)
 	c.Writer.WriteHeader(http.StatusOK)
 	n, err := c.Writer.Write(rspBody)
 	log.ErrorIf(ctx, err)
@@ -80,8 +80,8 @@ func Success(c *gin.Context, v any) {
 func SuccessMsg(c *gin.Context, v string) {
 	ctx := c.Request.Context()
 	rid := ctxs.RequestId(ctx)
-	c.Writer.Header().Set("X-CSMS-Request-Id", rid)
-	c.Writer.Header().Set("X-CSMS-Message", v)
+	c.Writer.Header().Set("X-Csms-Request-Id", rid)
+	c.Writer.Header().Set("X-Csms-Message", v)
 	c.Writer.WriteHeader(http.StatusOK)
 }
 
@@ -89,7 +89,7 @@ func SuccessMsg(c *gin.Context, v string) {
 func VendFile(c *gin.Context, fileSize int64, fileName string, fileObj io.Reader) {
 	ctx := c.Request.Context()
 	rid := ctxs.RequestId(ctx)
-	c.Writer.Header().Set("X-CSMS-Request-Id", rid)
+	c.Writer.Header().Set("X-Csms-Request-Id", rid)
 	c.DataFromReader(
 		http.StatusOK,
 		fileSize,

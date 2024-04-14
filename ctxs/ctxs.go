@@ -28,6 +28,7 @@ const (
 	ctxKey_RequestPath ctxKey = "ctxKey_RequestPath"
 	ctxKey_Transaction ctxKey = "ctxKey_Transaction"
 	ctxKey_Func        ctxKey = "ctxKey_Func"
+	ctxKey_ErrMsg      ctxKey = "ctxKey_ErrMsg"
 )
 
 type ctxKey string
@@ -117,6 +118,15 @@ func Func(ctx context.Context) string {
 	return fn
 }
 
+// ErrMsg 失败消息
+func ErrMsg(ctx context.Context) []string {
+	if ctx == nil {
+		return nil
+	}
+	errMsg, _ := ctx.Value(ctxKey_ErrMsg).([]string)
+	return errMsg
+}
+
 // WithUserId 设置上下文中的UserId
 func WithUserId(ctx context.Context, userId uint) context.Context {
 	if ctx == nil {
@@ -187,6 +197,15 @@ func WithFunc(ctx context.Context, fn string) context.Context {
 		ctx = context.Background()
 	}
 	return context.WithValue(ctx, ctxKey_Func, fn)
+}
+
+// AppendErrMsg 添加错误消息
+func AppendErrMsg(ctx context.Context, errMsg string) context.Context {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	msg := ErrMsg(ctx)
+	return context.WithValue(ctx, ctxKey_ErrMsg, append(msg, errMsg))
 }
 
 // NewCtx 新建上下文对象

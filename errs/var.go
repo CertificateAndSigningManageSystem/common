@@ -14,32 +14,32 @@ package errs
 
 import "net/http"
 
-// ErrUnknownUser 登录时未知用户
-var ErrUnknownUser error = &Error{
+// ErrNeedLogin 登录时未知用户
+var ErrNeedLogin error = &Error{
 	HTTPStatus: http.StatusUnauthorized,
-	Msg:        "unknown user",
+	Msg:        "请先登陆",
 }
 
 // ErrFileNotExists 文件不存在
 var ErrFileNotExists error = &Error{
 	HTTPStatus: http.StatusNotFound,
-	Msg:        "file not exists",
+	Msg:        "文件不存在",
 }
 
 // ErrIllegalRequest 非法请求
 var ErrIllegalRequest error = &Error{
 	HTTPStatus: http.StatusExpectationFailed,
-	Msg:        "illegal request",
+	Msg:        "非法请求",
 }
 
 // ErrTooManyRequest 请求频繁
 var ErrTooManyRequest error = &Error{
 	HTTPStatus: http.StatusTooManyRequests,
-	Msg:        "too many request",
+	Msg:        "请求过载",
 }
 
 // ErrNoAuth 无授权或授权非法
 var ErrNoAuth error = &Error{
 	HTTPStatus: http.StatusForbidden,
-	Msg:        "need authorization",
+	Msg:        "未授权访问",
 }

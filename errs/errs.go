@@ -70,7 +70,7 @@ func NewParamsErrMsg(msg string) error {
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("http status %d: %s, inner error %v", e.HTTPStatus, e.Msg, e.WrappedErr)
+	return fmt.Sprintf("%d %s %v", e.HTTPStatus, e.Msg, e.WrappedErr)
 }
 
 func (e *Error) Unwrap() error {

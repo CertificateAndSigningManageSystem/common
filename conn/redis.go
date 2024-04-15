@@ -36,7 +36,9 @@ const (
 	// 定时任务记录
 	CacheKey_CronRecordFmt = "cron:%s:%s"
 	// 用户会话
-	CacheKey_UserSession = "user:session:%s:string"
+	CacheKey_UserSessionFmt = "user:session:%s:%s:string"
+	// 登陆失败次数记录
+	CacheKey_UserLoginFailTimesFmt = "user:login:fail:times:%s:string"
 )
 
 var redisClient *redis.Client

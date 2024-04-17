@@ -24,7 +24,6 @@ type TFile struct {
 	UserId     uint      `gorm:"column:user_id; type:int unsigned; comment:上传人，外码" json:"userId,omitempty"`
 	TusdId     string    `gorm:"column:tusd_id; type:char(32); comment:tusd文件Id" json:"tusdId,omitempty"`
 	Name       string    `gorm:"column:name; type:varchar(256); comment:文件名" json:"name,omitempty"`
-	Ext        string    `gorm:"column:ext; type:varchar(16); comment:格式" json:"ext,omitempty"`
 	MD5        string    `gorm:"column:md5; type:char(32); comment:散列值" json:"md5,omitempty"`
 	SHA1       string    `gorm:"column:sha1; type:char(40); comment:散列值" json:"sha1,omitempty"`
 	SHA256     string    `gorm:"column:sha256; type:char(64); comment:散列值" json:"sha256,omitempty"`

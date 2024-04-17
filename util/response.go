@@ -61,9 +61,12 @@ func FailByErr(c *gin.Context, err error) {
 func Success(c *gin.Context, v any) {
 	ctx := c.Request.Context()
 	rid := ctxs.RequestId(ctx)
-	rspBody, _ := json.Marshal(v)
-	if len(rspBody) < 5*1024 {
-		log.Info(ctx, "rsqBody is", string(rspBody))
+	var rspBody []byte
+	if v != nil {
+		rspBody, _ = json.Marshal(v)
+		if len(rspBody) < 5*1024 {
+			log.Info(ctx, "rsqBody is", string(rspBody))
+		}
 	}
 	c.Writer.Header().Set("Content-Type", "application/json; charset=utf8")
 	c.Writer.Header().Set("Content-Length", strconv.Itoa(len(rspBody)))

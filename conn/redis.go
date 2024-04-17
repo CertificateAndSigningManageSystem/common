@@ -39,6 +39,8 @@ const (
 	CacheKey_UserSessionFmt = "user:session:%s:%s:string"
 	// 登陆失败次数记录
 	CacheKey_UserLoginFailTimesFmt = "user:login:fail:times:%s:string"
+	// 分片大小记录
+	CacheKey_UploadFileSize = "upload:file:size:hash"
 )
 
 var redisClient *redis.Client
@@ -98,7 +100,7 @@ func LockWait(ctx context.Context, key string, wait time.Duration) bool {
 // Unlock 解锁
 func Unlock(ctx context.Context, key string) {
 	err := GetRedisClient(ctx).Del(ctx, fmt.Sprintf(CacheKey_LockFmt, key)).Err()
-	if !errors.Is(err, redis.Nil) {
+	if err != nil && !errors.Is(err, redis.Nil) {
 		log.Error(ctx, "redis unlock error", err)
 	}
 }

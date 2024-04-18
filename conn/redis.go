@@ -39,8 +39,6 @@ const (
 	CacheKey_UserSessionFmt = "user:session:%s:%s:string"
 	// 登陆失败次数记录
 	CacheKey_UserLoginFailTimesFmt = "user:login:fail:times:%s:string"
-	// 分片大小记录
-	CacheKey_UploadFileSize = "upload:file:size:hash"
 )
 
 var redisClient *redis.Client

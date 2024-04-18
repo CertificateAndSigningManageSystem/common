@@ -102,3 +102,26 @@ func Unlock(ctx context.Context, key string) {
 		log.Error(ctx, "redis unlock error", err)
 	}
 }
+
+// HasLock 是否加锁了
+func HasLock(ctx context.Context, key string) bool {
+	result, err := GetRedisClient(ctx).Exists(ctx, fmt.Sprintf(CacheKey_LockFmt, key)).Result()
+	if err != nil {
+		return true
+	}
+	return result > 0
+}
+
+// WaitUnlock 等待锁释放
+func WaitUnlock(ctx context.Context, key string, max time.Duration) bool {
+	now := time.Now()
+	for HasLock(ctx, key) {
+		if max > 0 && time.Since(now) > max {
+			return false
+		}
+		runtime.Gosched()
+		time.Sleep(time.Millisecond * 100)
+	}
+
+	return true
+}

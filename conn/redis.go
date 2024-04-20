@@ -25,19 +25,19 @@ import (
 )
 
 const (
-	// 分布式锁键格式
+	// CacheKey_LockFmt 分布式锁键格式
 	CacheKey_LockFmt = "lock:%s:string"
-	// 分片上传文件
+	// CacheKey_UploadFiles 分片上传文件
 	CacheKey_UploadFiles = "upload:files:hash"
-	// 记录唯一id缓存键
+	// CacheKey_GenIdFmt 记录唯一id缓存键
 	CacheKey_GenIdFmt = "gen:id:%s:set"
-	// 分片上传信息
+	// CacheKey_UploadPartFmt 分片上传信息
 	CacheKey_UploadPartFmt = "upload:part:%s:sset"
-	// 定时任务记录
+	// CacheKey_CronRecordFmt 定时任务记录
 	CacheKey_CronRecordFmt = "cron:%s:%s"
-	// 用户会话
+	// CacheKey_UserSessionFmt 用户会话
 	CacheKey_UserSessionFmt = "user:session:%s:%s:string"
-	// 登陆失败次数记录
+	// CacheKey_UserLoginFailTimesFmt 登陆失败次数记录
 	CacheKey_UserLoginFailTimesFmt = "user:login:fail:times:%s:string"
 )
 
@@ -53,11 +53,15 @@ func InitialRedis(ctx context.Context, addr, passwd string, db int) {
 	if err := redisClient.Ping(ctx).Err(); err != nil {
 		log.Fatal(ctx, "cannot connect redis", err)
 	}
+	runtime.SetFinalizer(redisClient, func(redisClient *redis.Client) { CloseRedisClient(ctx) })
 	log.Info(ctx, "init redis success")
 }
 
 // CloseRedisClient 关闭连接
 func CloseRedisClient(ctx context.Context) {
+	if redisClient == nil {
+		return
+	}
 	err := redisClient.Close()
 	if err != nil {
 		log.Error(ctx, err)
@@ -65,7 +69,7 @@ func CloseRedisClient(ctx context.Context) {
 }
 
 // GetRedisClient 获取Redis客户端
-func GetRedisClient(ctx context.Context) *redis.Client {
+func GetRedisClient(_ context.Context) *redis.Client {
 	return redisClient
 }
 
@@ -74,7 +78,7 @@ func Lock(ctx context.Context, key string, timeout time.Duration) bool {
 	b, err := GetRedisClient(ctx).SetNX(ctx, fmt.Sprintf(CacheKey_LockFmt, key),
 		time.Now().Format("20060102150405"), timeout).Result()
 	if err != nil {
-		log.Error(ctx, "redis lock error", err)
+		log.Error(ctx, err)
 	}
 	return b
 }
@@ -99,7 +103,7 @@ func LockWait(ctx context.Context, key string, wait time.Duration) bool {
 func Unlock(ctx context.Context, key string) {
 	err := GetRedisClient(ctx).Del(ctx, fmt.Sprintf(CacheKey_LockFmt, key)).Err()
 	if err != nil && !errors.Is(err, redis.Nil) {
-		log.Error(ctx, "redis unlock error", err)
+		log.Error(ctx, err)
 	}
 }
 

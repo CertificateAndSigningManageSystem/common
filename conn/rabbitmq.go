@@ -14,6 +14,7 @@ package conn
 
 import (
 	"context"
+	"runtime"
 
 	"github.com/rabbitmq/amqp091-go"
 
@@ -37,6 +38,7 @@ func InitialRabbitMQ(ctx context.Context, uri string) {
 	}
 	rabbitmqClient = connection
 	rabbitmqChannel = channel
+	runtime.SetFinalizer(rabbitmqClient, func(rabbitmqClient *amqp091.Connection) { GetRabbitMQChannel(ctx) })
 	log.Info(ctx, "init rabbitmq success")
 }
 
@@ -47,6 +49,9 @@ func GetRabbitMQChannel(ctx context.Context) *amqp091.Channel {
 
 // CloseRabbitMQClient 关闭连接
 func CloseRabbitMQClient(ctx context.Context) {
+	if rabbitmqClient == nil {
+		return
+	}
 	err := rabbitmqChannel.Close()
 	if err != nil {
 		log.Error(ctx, err)

@@ -15,6 +15,7 @@ package conn
 import (
 	"context"
 	"fmt"
+	"runtime"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -52,6 +53,7 @@ func InitialMySQL(ctx context.Context, user, pass, host, port, db string, maxIde
 	sql.SetMaxOpenConns(maxOpen)
 	// obj = obj.Debug()
 	mysqlClient = obj
+	runtime.SetFinalizer(mysqlClient, func(obj *gorm.DB) { CloseMysqlClient(ctx) })
 	log.Info(ctx, "init mysql success")
 }
 
@@ -67,6 +69,9 @@ func GetMySQLClient(ctx context.Context) *gorm.DB {
 
 // CloseMysqlClient 断开连接
 func CloseMysqlClient(ctx context.Context) {
+	if mysqlClient == nil {
+		return
+	}
 	db, err := mysqlClient.DB()
 	if err != nil {
 		log.Error(ctx, err)

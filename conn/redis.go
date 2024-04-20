@@ -41,6 +41,11 @@ const (
 	CacheKey_UserLoginFailTimesFmt = "user:login:fail:times:%s:string"
 )
 
+const (
+	LockKey_UserRegisterFmt     = "user:register:%s"
+	LockKey_UserChangeAvatarFmt = "user:change:avatar:%d"
+)
+
 var redisClient *redis.Client
 
 // InitialRedis 初始化Redis

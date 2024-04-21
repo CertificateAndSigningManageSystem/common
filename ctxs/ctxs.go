@@ -29,6 +29,7 @@ const (
 	ctxKey_Transaction ctxKey = "ctxKey_Transaction"
 	ctxKey_Func        ctxKey = "ctxKey_Func"
 	ctxKey_ErrMsg      ctxKey = "ctxKey_ErrMsg"
+	ctxKey_UserName    ctxKey = "ctxKey_UserName"
 )
 
 type ctxKey string
@@ -127,6 +128,15 @@ func ErrMsg(ctx context.Context) []string {
 	return errMsg
 }
 
+// UserName 获取上下文中的用户名信息
+func UserName(ctx context.Context) string {
+	if ctx == nil {
+		return ""
+	}
+	userName, _ := ctx.Value(ctxKey_UserName).(string)
+	return userName
+}
+
 // WithUserId 设置上下文中的UserId
 func WithUserId(ctx context.Context, userId uint) context.Context {
 	if ctx == nil {
@@ -206,6 +216,14 @@ func AppendErrMsg(ctx context.Context, errMsg string) context.Context {
 	}
 	msg := ErrMsg(ctx)
 	return context.WithValue(ctx, ctxKey_ErrMsg, append(msg, errMsg))
+}
+
+// WithUserName 上下文附带链路用户名
+func WithUserName(ctx context.Context, userName string) context.Context {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	return context.WithValue(ctx, ctxKey_UserName, userName)
 }
 
 // NewCtx 新建上下文对象

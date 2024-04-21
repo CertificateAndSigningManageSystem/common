@@ -23,7 +23,7 @@ import (
 
 var tusClient tus_client.TusClient
 
-// InitialTusClient 初始化tus客户端
+// InitialTusClient 初始化 tus 客户端
 func InitialTusClient(ctx context.Context, host string) {
 	tusClient = tus_client.NewClient(host, tus_client.WithLogger(&log.TusClientLogger{}))
 	options, err := tusClient.Options(ctx)
@@ -36,7 +36,7 @@ func InitialTusClient(ctx context.Context, host string) {
 	log.Info(ctx, "init tus client success")
 }
 
-// GetTusClient 获取tus客户端
-func GetTusClient(ctx context.Context) tus_client.TusClient {
+// GetTusClient 获取 tus 客户端
+func GetTusClient(_ context.Context) tus_client.TusClient {
 	return tusClient
 }

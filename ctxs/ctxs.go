@@ -30,51 +30,48 @@ const (
 	ctxKey_Func        ctxKey = "ctxKey_Func"
 	ctxKey_ErrMsg      ctxKey = "ctxKey_ErrMsg"
 	ctxKey_UserName    ctxKey = "ctxKey_UserName"
+	ctxKey_AppId       ctxKey = "ctxKey_AppId"
 )
 
 type ctxKey string
 
-// UserId 获取ctx中的用户Id
+// UserId 获取 ctx 中的用户 Id
 func UserId(ctx context.Context) uint {
 	if ctx == nil {
 		return 0
 	}
-	value := ctx.Value(ctxKey_UserId)
-	userID, _ := value.(uint)
-	return userID
+	userId, _ := ctx.Value(ctxKey_UserId).(uint)
+	return userId
 }
 
-// APIAuthId 获取ctx中的API凭证Id
+// APIAuthId 获取 ctx 中的 API 凭证 Id
 func APIAuthId(ctx context.Context) uint {
 	if ctx == nil {
 		return 0
 	}
-	value := ctx.Value(ctxKey_APIAuthId)
-	apiAuthID, _ := value.(uint)
-	return apiAuthID
+	apiAuthId, _ := ctx.Value(ctxKey_APIAuthId).(uint)
+	return apiAuthId
 }
 
-// Trace 获取ctx中的错误堆栈信息
+// Trace 获取 ctx 中的错误堆栈信息
 func Trace(ctx context.Context) string {
 	if ctx == nil {
 		return ""
 	}
-	value := ctx.Value(ctxKey_Trace)
-	trace, _ := value.(string)
+	trace, _ := ctx.Value(ctxKey_Trace).(string)
 	return trace
 }
 
-// CallLine 获取log打印代码行
+// CallLine 获取 log 打印代码行
 func CallLine(ctx context.Context) string {
 	if ctx == nil {
 		return ""
 	}
-	value := ctx.Value(ctxKey_CallLine)
-	callLine, _ := value.(string)
+	callLine, _ := ctx.Value(ctxKey_CallLine).(string)
 	return callLine
 }
 
-// RequestId 获取上下文中的链路Id
+// RequestId 获取上下文中的链路 Id
 func RequestId(ctx context.Context) string {
 	if ctx == nil {
 		return ""
@@ -83,7 +80,7 @@ func RequestId(ctx context.Context) string {
 	return rid
 }
 
-// RequestIP 获取上下文中的请求IP
+// RequestIP 获取上下文中的请求 IP
 func RequestIP(ctx context.Context) string {
 	if ctx == nil {
 		return ""
@@ -92,7 +89,7 @@ func RequestIP(ctx context.Context) string {
 	return ip
 }
 
-// RequestPath 获取上下文中的请求Path
+// RequestPath 获取上下文中的请求 Path
 func RequestPath(ctx context.Context) string {
 	if ctx == nil {
 		return ""
@@ -137,7 +134,16 @@ func UserName(ctx context.Context) string {
 	return userName
 }
 
-// WithUserId 设置上下文中的UserId
+// AppId 获取 ctx 中的 appId
+func AppId(ctx context.Context) uint {
+	if ctx == nil {
+		return 0
+	}
+	appId, _ := ctx.Value(ctxKey_AppId).(uint)
+	return appId
+}
+
+// WithUserId 设置上下文中的 UserId
 func WithUserId(ctx context.Context, userId uint) context.Context {
 	if ctx == nil {
 		ctx = context.Background()
@@ -145,7 +151,7 @@ func WithUserId(ctx context.Context, userId uint) context.Context {
 	return context.WithValue(ctx, ctxKey_UserId, userId)
 }
 
-// WithAPIAuthId 设置上下文中的AuthId
+// WithAPIAuthId 设置上下文中的 AuthId
 func WithAPIAuthId(ctx context.Context, authId uint) context.Context {
 	if ctx == nil {
 		ctx = context.Background()
@@ -153,7 +159,7 @@ func WithAPIAuthId(ctx context.Context, authId uint) context.Context {
 	return context.WithValue(ctx, ctxKey_APIAuthId, authId)
 }
 
-// WithTrace ctx添加堆栈信息
+// WithTrace ctx 添加堆栈信息
 func WithTrace(ctx context.Context, trace string) context.Context {
 	if ctx == nil {
 		ctx = context.Background()
@@ -161,7 +167,7 @@ func WithTrace(ctx context.Context, trace string) context.Context {
 	return context.WithValue(ctx, ctxKey_Trace, trace)
 }
 
-// WithCallLine ctx添加log打印行
+// WithCallLine ctx 添加 log 打印行
 func WithCallLine(ctx context.Context, callLine string) context.Context {
 	if ctx == nil {
 		ctx = context.Background()
@@ -177,7 +183,7 @@ func WithRequestId(ctx context.Context, rid string) context.Context {
 	return context.WithValue(ctx, ctxKey_RequestId, rid)
 }
 
-// WithRequestIP 上下文附带链路请求IP
+// WithRequestIP 上下文附带链路请求 IP
 func WithRequestIP(ctx context.Context, ip string) context.Context {
 	if ctx == nil {
 		ctx = context.Background()
@@ -185,7 +191,7 @@ func WithRequestIP(ctx context.Context, ip string) context.Context {
 	return context.WithValue(ctx, ctxKey_RequestIP, ip)
 }
 
-// WithRequestPath 上下文附带链路请求Path
+// WithRequestPath 上下文附带链路请求 Path
 func WithRequestPath(ctx context.Context, path string) context.Context {
 	if ctx == nil {
 		ctx = context.Background()
@@ -226,6 +232,14 @@ func WithUserName(ctx context.Context, userName string) context.Context {
 	return context.WithValue(ctx, ctxKey_UserName, userName)
 }
 
+// WithAppId 设置上下文中的 appId
+func WithAppId(ctx context.Context, appId uint) context.Context {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	return context.WithValue(ctx, ctxKey_AppId, appId)
+}
+
 // NewCtx 新建上下文对象
 func NewCtx(fn string) context.Context {
 	ctx := context.Background()
@@ -240,5 +254,7 @@ func CloneCtx(ctx context.Context) context.Context {
 	newCtx = WithRequestIP(newCtx, RequestIP(ctx))
 	newCtx = WithAPIAuthId(newCtx, APIAuthId(ctx))
 	newCtx = WithUserId(newCtx, UserId(ctx))
+	newCtx = WithAppId(newCtx, AppId(ctx))
+	newCtx = WithUserName(newCtx, UserName(ctx))
 	return newCtx
 }

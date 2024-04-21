@@ -48,14 +48,15 @@ const (
 
 var redisClient *redis.Client
 
-// InitialRedis 初始化Redis
+// InitialRedis 初始化 Redis 连接
 func InitialRedis(ctx context.Context, addr, passwd string, db int) {
 	redisClient = redis.NewClient(&redis.Options{
 		Addr:     addr,
 		Password: passwd,
 		DB:       db,
 	})
-	if err := redisClient.Ping(ctx).Err(); err != nil {
+	err := redisClient.Ping(ctx).Err()
+	if err != nil {
 		log.Fatal(ctx, "cannot connect redis", err)
 	}
 	runtime.SetFinalizer(redisClient, func(redisClient *redis.Client) { CloseRedisClient(ctx) })
@@ -73,7 +74,7 @@ func CloseRedisClient(ctx context.Context) {
 	}
 }
 
-// GetRedisClient 获取Redis客户端
+// GetRedisClient 获取 Redis 客户端
 func GetRedisClient(_ context.Context) *redis.Client {
 	return redisClient
 }

@@ -14,7 +14,7 @@ package errs
 
 import "net/http"
 
-// ErrNeedLogin 登录时未知用户
+// ErrNeedLogin 需登录
 var ErrNeedLogin error = &Error{
 	HTTPStatus: http.StatusUnauthorized,
 	Msg:        "请先登陆",

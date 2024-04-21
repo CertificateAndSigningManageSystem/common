@@ -30,18 +30,21 @@ import (
 
 var mysqlClient *gorm.DB
 
-// InitialMySQL 初始化MySQL
+// InitialMySQL 初始化 MySQL 连接
 func InitialMySQL(ctx context.Context, user, pass, host, port, db string, maxIdea, maxOpen int) {
-	obj, err := gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=true&loc=Local",
-		user, pass, host, port, db)),
+	obj, err := gorm.Open(mysql.Open(
+		fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=true&loc=Local", user, pass, host, port, db),
+	),
 		&gorm.Config{
 			NamingStrategy: schema.NamingStrategy{SingularTable: true},
-			Logger: logger.New(&log.GormLogFormatter{}, logger.Config{
-				IgnoreRecordNotFoundError: true,
-				LogLevel:                  logger.Info,
-				SlowThreshold:             3 * time.Second,
-				// Colorful: isLocal,
-			})})
+			Logger: logger.New(&log.GormLogFormatter{},
+				logger.Config{
+					IgnoreRecordNotFoundError: true,
+					LogLevel:                  logger.Info,
+					SlowThreshold:             3 * time.Second,
+				}),
+		},
+	)
 	if err != nil {
 		log.Fatal(ctx, "init mysql error", err)
 	}
@@ -57,7 +60,7 @@ func InitialMySQL(ctx context.Context, user, pass, host, port, db string, maxIde
 	log.Info(ctx, "init mysql success")
 }
 
-// GetMySQLClient 获取MySQL客户端
+// GetMySQLClient 获取 MySQL 客户端
 func GetMySQLClient(ctx context.Context) *gorm.DB {
 	// 若上下文有事务则使用之
 	tx := ctxs.Transaction(ctx)
@@ -77,8 +80,7 @@ func CloseMysqlClient(ctx context.Context) {
 		log.Error(ctx, err)
 		return
 	}
-	err = db.Close()
-	if err != nil {
+	if err = db.Close(); err != nil {
 		log.Error(ctx, err)
 	}
 }

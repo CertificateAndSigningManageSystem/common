@@ -26,7 +26,7 @@ var (
 	rabbitmqChannel *amqp091.Channel
 )
 
-// InitialRabbitMQ 初始化RabbitMQ
+// InitialRabbitMQ 初始化 RabbitMQ 连接
 func InitialRabbitMQ(ctx context.Context, uri string) {
 	connection, err := amqp091.Dial(uri)
 	if err != nil {
@@ -42,8 +42,8 @@ func InitialRabbitMQ(ctx context.Context, uri string) {
 	log.Info(ctx, "init rabbitmq success")
 }
 
-// GetRabbitMQChannel 获取RabbitMQ通道
-func GetRabbitMQChannel(ctx context.Context) *amqp091.Channel {
+// GetRabbitMQChannel 获取 RabbitMQ 通道
+func GetRabbitMQChannel(_ context.Context) *amqp091.Channel {
 	return rabbitmqChannel
 }
 
@@ -56,8 +56,7 @@ func CloseRabbitMQClient(ctx context.Context) {
 	if err != nil {
 		log.Error(ctx, err)
 	}
-	err = rabbitmqClient.Close()
-	if err != nil {
+	if err = rabbitmqClient.Close(); err != nil {
 		log.Error(ctx, err)
 	}
 }

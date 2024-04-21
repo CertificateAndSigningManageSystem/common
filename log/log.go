@@ -49,7 +49,6 @@ func InitialLog(logDir, module string, maxAge, rotationTime time.Duration, debug
 	}
 	infoWriter, err := rotatelogs.New(
 		baseLogFile+"_info_%Y%m%d%H%M.log",
-		// rotatelogs.WithLinkName(baseLogFile),      // 生成软链，指向最新日志文件
 		rotatelogs.WithMaxAge(maxAge),
 		rotatelogs.WithRotationTime(rotationTime),
 	)

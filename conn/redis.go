@@ -45,6 +45,7 @@ const (
 	LockKey_UserRegisterFmt     = "user:register:%s"
 	LockKey_UserChangeAvatarFmt = "user:change:avatar:%d"
 	LockKey_UserLoginFmt        = "user:login:%d"
+	LockKey_OpenApiCreateFmt    = "openapi:create:%d:%s"
 )
 
 var redisClient *redis.Client

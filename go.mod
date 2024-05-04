@@ -16,6 +16,7 @@ require (
 	gitee.com/ivfzhou/gotools/v4 v4.0.0
 	gitee.com/ivfzhou/tus_client v0.4.1
 	github.com/gin-gonic/gin v1.9.1
+	github.com/google/uuid v1.6.0
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/rabbitmq/amqp091-go v1.9.0
 	github.com/redis/go-redis/v9 v9.5.1

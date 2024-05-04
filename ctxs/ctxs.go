@@ -14,7 +14,9 @@ package ctxs
 
 import (
 	"context"
+	"strings"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -244,6 +246,7 @@ func WithAppId(ctx context.Context, appId uint) context.Context {
 func NewCtx(fn string) context.Context {
 	ctx := context.Background()
 	ctx = WithFunc(ctx, fn)
+	ctx = WithRequestId(ctx, strings.ReplaceAll(uuid.NewString(), "-", ""))
 	return ctx
 }
 
